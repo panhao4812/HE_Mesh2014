@@ -1,9 +1,41 @@
+/*
+ * 
+ */
 package wblut.hemesh;
 
-public interface HE_Machine {
+/**
+ * 
+ */
+public abstract class HE_Machine {
+    
+    /**
+     * 
+     */
+    public static final HET_ProgressTracker tracker = HET_ProgressTracker
+	    .instance();
 
-	public HE_Mesh apply(HE_Mesh mesh);
+    /**
+     * 
+     *
+     * @param mesh 
+     * @return 
+     */
+    public abstract HE_Mesh apply(HE_Mesh mesh);
 
-	public HE_Mesh apply(HE_Selection selection);
+    /**
+     * 
+     *
+     * @param selection 
+     * @return 
+     */
+    public abstract HE_Mesh apply(HE_Selection selection);
 
+    /**
+     * 
+     *
+     * @return 
+     */
+    public String getStatus() {
+	return tracker.getStatus();
+    }
 }

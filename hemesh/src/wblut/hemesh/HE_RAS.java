@@ -1,130 +1,134 @@
+/*
+ * 
+ */
 package wblut.hemesh;
 
 /**
  * Random Access Set of HE_Element
- * Combines advantages of an ArrayList - random access, sizeable - 
+ * Combines advantages of an ArrayList - random access, sizeable -
  * with those of a HashMap - fast lookup, unique members -.
  */
-
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import javolution.util.FastMap;
-import javolution.util.FastTable;
+/**
+ * 
+ *
+ * @param <E> 
+ */
+public abstract class HE_RAS<E extends HE_Element> extends AbstractSet<E> {
+    
+    /**
+     * 
+     */
+    public HE_RAS() {
+    }
 
-public class HE_RAS<E extends HE_Element> extends AbstractSet<E> {
-	List<E> objects;
-	Map<Long, Integer> indices;
+    /**
+     * 
+     *
+     * @param items 
+     */
+    public HE_RAS(final Collection<E> items) {
+    }
 
-	public HE_RAS() {
-		objects = new FastTable<E>();
-		indices = new FastMap<Long, Integer>();
-	}
+    /* (non-Javadoc)
+     * @see java.util.AbstractCollection#add(java.lang.Object)
+     */
+    @Override
+    public abstract boolean add(final E item);
 
-	public HE_RAS(int n) {
-		objects = new FastTable<E>();
-		indices = new FastMap<Long, Integer>();
-	}
+    /**
+     * Override element at position <code>id</code> with last element.
+     *
+     * @param id 
+     * @return 
+     */
+    public abstract E removeAt(final int id);
 
-	public HE_RAS(Collection<E> items) {
-		objects = new FastTable<E>();
-		indices = new FastMap<Long, Integer>();
-		for (E item : items) {
-			indices.put(item._key, objects.size());
-			objects.add(item);
-		}
-	}
+    /**
+     * 
+     *
+     * @param item 
+     * @return 
+     */
+    public abstract boolean remove(final E item);
 
-	@Override
-	public boolean add(E item) {
-		if (indices.containsKey(item._key)) {
-			return false;
-		}
-		indices.put(item._key, objects.size());
-		objects.add(item);
-		return true;
-	}
+    /**
+     * 
+     *
+     * @param i 
+     * @return 
+     */
+    public abstract E get(final int i);
 
-	/**
-	 * Override element at position <code>id</code> with last element.
-	 * 
-	 * @param id
-	 */
-	public E removeAt(int id) {
-		if (id >= objects.size()) {
-			return null;
-		}
-		E res = objects.get(id);
-		indices.remove(res._key);
-		E last = objects.remove(objects.size() - 1);
-		// skip filling the hole if last is removed
-		if (id < objects.size()) {
-			indices.put(last._key, id);
-			objects.set(id, last);
-		}
-		return res;
-	}
+    /**
+     * 
+     *
+     * @param i 
+     * @return 
+     */
+    public abstract E getByIndex(final int i);
 
-	public boolean remove(E item) {
-		@SuppressWarnings(value = "element-type-mismatch")
-		Integer id = indices.get(item._key);
-		if (id == null) {
-			return false;
-		}
-		removeAt(id);
-		return true;
-	}
+    /**
+     * 
+     *
+     * @param key 
+     * @return 
+     */
+    public abstract E getByKey(final Long key);
 
-	public E get(int i) {
-		return objects.get(i);
-	}
+    /**
+     * 
+     *
+     * @param object 
+     * @return 
+     */
+    public abstract int getIndex(final E object);
 
-	public E getByKey(Long key) {
-		Integer i = indices.get(key);
-		if (i == null)
-			return null;
-		return objects.get(i);
-	}
+    /**
+     * 
+     *
+     * @param rnd 
+     * @return 
+     */
+    public abstract E pollRandom(final Random rnd);
 
-	public int getIndex(E object) {
-		Integer i = indices.get(object._key);
-		if (i == null)
-			return -1;
-		return i;
-	}
+    /* (non-Javadoc)
+     * @see java.util.AbstractCollection#size()
+     */
+    @Override
+    public abstract int size();
 
-	public E pollRandom(Random rnd) {
-		if (objects.isEmpty()) {
-			return null;
-		}
-		int id = rnd.nextInt(objects.size());
-		return removeAt(id);
-	}
+    /**
+     * 
+     *
+     * @param object 
+     * @return 
+     */
+    public abstract boolean contains(final E object);
 
-	@Override
-	public int size() {
-		return objects.size();
-	}
+    /**
+     * 
+     *
+     * @param key 
+     * @return 
+     */
+    public abstract boolean containsKey(final Long key);
 
-	public boolean contains(E object) {
-		return indices.containsKey(object._key);
-	}
+    /* (non-Javadoc)
+     * @see java.util.AbstractCollection#iterator()
+     */
+    @Override
+    public abstract Iterator<E> iterator();
 
-	public boolean containsKey(Long key) {
-		return indices.containsKey(key);
-	}
-
-	@Override
-	public Iterator<E> iterator() {
-		return objects.iterator();
-	}
-
-	public List<E> getObjects() {
-		return objects;
-	}
-
+    /**
+     * 
+     *
+     * @return 
+     */
+    public abstract List<E> getObjects();
 }

@@ -1,173 +1,165 @@
+/*
+ *
+ */
 package wblut.hemesh;
 
 import wblut.geom.WB_Point;
 
 /**
  * Torus.
- * 
+ *
  * @author Frederik Vanhoutte (W:Blut)
- * 
+ *
  */
-
 public class HEC_Torus extends HEC_Creator {
+    /** Tube radius. */
+    private double Ri;
+    /** Torus Radius. */
+    private double Ro;
+    /** Facets. */
+    private int tubefacets;
+    /** Height steps. */
+    private int torusfacets;
+    /** The twist. */
+    private int twist;
 
-	/** Tube radius. */
-	private double Ri;
+    public HEC_Torus() {
+	super();
+	Ri = 0;
+	Ro = 0;
+	tubefacets = 6;
+	torusfacets = 6;
+    }
 
-	/** Torus Radius. */
-	private double Ro;
+    /**
+     * Instantiates a new torus.
+     *
+     * @param Ri
+     *
+     * @param Ro
+     *
+     * @param tubefacets
+     *
+     * @param torusfacets
+     *
+     */
+    public HEC_Torus(final double Ri, final double Ro, final int tubefacets,
+	    final int torusfacets) {
+	this();
+	this.Ri = Ri;
+	this.Ro = Ro;
+	this.tubefacets = tubefacets;
+	this.torusfacets = torusfacets;
+    }
 
-	/** Facets. */
-	private int tubefacets;
+    /**
+     * Sets the radius.
+     *
+     * @param Ri
+     *
+     * @param Ro
+     *
+     * @return
+     */
+    public HEC_Torus setRadius(final double Ri, final double Ro) {
+	this.Ri = Ri;
+	this.Ro = Ro;
+	return this;
+    }
 
-	/** Height steps. */
-	private int torusfacets;
+    /**
+     * Sets the tube facets.
+     *
+     * @param facets
+     *
+     * @return
+     */
+    public HEC_Torus setTubeFacets(final int facets) {
+	tubefacets = facets;
+	return this;
+    }
 
-	/** The twist. */
-	private int twist;
+    /**
+     * Sets the torus facets.
+     *
+     * @param facets
+     *
+     * @return
+     */
+    public HEC_Torus setTorusFacets(final int facets) {
+	torusfacets = facets;
+	return this;
+    }
 
-	/**
-	 * Instantiates a new cylinder.
-	 * 
-	 */
-	public HEC_Torus() {
-		super();
-		Ri = 0;
-		Ro = 0;
-		tubefacets = 6;
-		torusfacets = 6;
+    /**
+     * Sets twist.
+     *
+     * @param t
+     *
+     * @return
+     */
+    public HEC_Torus setTwist(final int t) {
+	twist = Math.max(0, t);
+	return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see wblut.hemesh.HE_Creator#create()
+     */
+    @Override
+    protected HE_Mesh createBase() {
+	final WB_Point[] vertices = new WB_Point[(tubefacets + 1)
+		* (torusfacets + 1)];
+	final WB_Point[] uvws = new WB_Point[(tubefacets + 1)
+		* (torusfacets + 1)];
+	final double dtua = (2 * Math.PI) / tubefacets;
+	final double dtoa = (2 * Math.PI) / torusfacets;
+	final double dv = 1.0 / tubefacets;
+	final double du = 1.0 / torusfacets;
+	final double dtwa = (twist * dtoa) / tubefacets;
+	int id = 0;
+	WB_Point basevertex;
+	for (int j = 0; j < torusfacets + 1; j++) {
+	    final int lj = (j == torusfacets) ? 0 : j;
+	    final double ca = Math.cos(lj * dtoa);
+	    final double sa = Math.sin(lj * dtoa);
+	    for (int i = 0; i < tubefacets + 1; i++) {
+		final int li = (i == tubefacets) ? 0 : i;
+		basevertex = new WB_Point(Ro
+			+ (Ri * Math.cos((dtua * li) + (j * dtwa))), 0, Ri
+			* Math.sin((dtua * li) + (j * dtwa)));
+		vertices[id] = new WB_Point(ca * basevertex.xd(), sa
+			* basevertex.xd(), basevertex.zd());
+		uvws[id] = new WB_Point(j * du, i * dv, 0);
+		id++;
+	    }
 	}
-
-	/**
-	 * Instantiates a new torus.
-	 * 
-	 * @param Ri
-	 *            the ri
-	 * @param Ro
-	 *            the ro
-	 * @param tubefacets
-	 *            the tubefacets
-	 * @param torusfacets
-	 *            the torusfacets
-	 */
-	public HEC_Torus(final double Ri, final double Ro, final int tubefacets,
-			final int torusfacets) {
-		this();
-		this.Ri = Ri;
-		this.Ro = Ro;
-		this.tubefacets = tubefacets;
-		this.torusfacets = torusfacets;
+	final int nfaces = tubefacets * torusfacets;
+	id = 0;
+	final int[][] faces = new int[nfaces][];
+	int j = 0;
+	for (j = 0; j < torusfacets; j++) {
+	    for (int i = 0; i < tubefacets; i++) {
+		faces[id] = new int[4];
+		faces[id][0] = i + (j * (tubefacets + 1));
+		faces[id][1] = i + ((j + 1) * (tubefacets + 1));
+		faces[id][2] = (i + 1) + ((j + 1) * (tubefacets + 1));
+		faces[id][3] = (i + 1) + (j * (tubefacets + 1));
+		id++;
+	    }
 	}
-
-	/**
-	 * Sets the radius.
-	 * 
-	 * @param Ri
-	 *            the ri
-	 * @param Ro
-	 *            the ro
-	 * @return the hE c_ torus
-	 */
-	public HEC_Torus setRadius(final double Ri, final double Ro) {
-		this.Ri = Ri;
-		this.Ro = Ro;
-		return this;
-	}
-
-	/**
-	 * Sets the tube facets.
-	 * 
-	 * @param facets
-	 *            the facets
-	 * @return the hE c_ torus
-	 */
-	public HEC_Torus setTubeFacets(final int facets) {
-		tubefacets = facets;
-		return this;
-	}
-
-	/**
-	 * Sets the torus facets.
-	 * 
-	 * @param facets
-	 *            the facets
-	 * @return the hE c_ torus
-	 */
-	public HEC_Torus setTorusFacets(final int facets) {
-		torusfacets = facets;
-		return this;
-	}
-
-	/**
-	 * Sets the twist.
-	 * 
-	 * @param t
-	 *            the t
-	 * @return the hE c_ torus
-	 */
-	public HEC_Torus setTwist(final int t) {
-		twist = Math.max(0, t);
-		return this;
-	}
-
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see wblut.hemesh.HE_Creator#create()
+	 * for (int i = 0; i < tubefacets; i++) { faces[id] = new int[4];
+	 * faces[id][0] = i + ((torusfacets - 1) * (tubefacets + 1));
+	 * faces[id][1] = (i + twist) % (tubefacets + 1) + (torusfacets *
+	 * (tubefacets + 1)); faces[id][2] = (i + twist + 1) % (tubefacets + 1)
+	 * + (torusfacets * (tubefacets + 1)); faces[id][3] = (i + 1) +
+	 * ((torusfacets - 1) * (tubefacets + 1)); id++; }
 	 */
-	@Override
-	protected HE_Mesh createBase() {
-
-		final WB_Point[] vertices = new WB_Point[tubefacets * torusfacets];
-
-		final double dtua = 2 * Math.PI / tubefacets;
-		final double dtoa = 2 * Math.PI / torusfacets;
-		final double dtwa = twist * dtoa / tubefacets;
-
-		int id = 0;
-
-		WB_Point basevertex;
-		for (int j = 0; j < torusfacets; j++) {
-			final double ca = Math.cos(j * dtoa);
-			final double sa = Math.sin(j * dtoa);
-			for (int i = 0; i < tubefacets; i++) {
-				basevertex = new WB_Point(Ro + Ri
-						* Math.cos(dtua * i + j * dtwa), 0, Ri
-						* Math.sin(dtua * i + j * dtwa));
-
-				vertices[id] = new WB_Point(ca * basevertex.xd(), sa
-						* basevertex.xd(), basevertex.zd());
-				id++;
-			}
-
-		}
-
-		final int nfaces = tubefacets * torusfacets;
-		id = 0;
-		final int[][] faces = new int[nfaces][];
-		for (int j = 0; j < torusfacets - 1; j++) {
-			for (int i = 0; i < tubefacets; i++) {
-				faces[id] = new int[4];
-				faces[id][0] = i + j * tubefacets;
-				faces[id][1] = i + ((j + 1) % torusfacets) * tubefacets;
-				faces[id][2] = (i + 1) % tubefacets + ((j + 1) % torusfacets)
-						* tubefacets;
-				faces[id][3] = (i + 1) % tubefacets + j * tubefacets;
-				id++;
-			}
-		}
-		for (int i = 0; i < tubefacets; i++) {
-			faces[id] = new int[4];
-			faces[id][0] = i + (torusfacets - 1) * tubefacets;
-			faces[id][1] = (i + twist) % tubefacets;
-			faces[id][2] = (i + twist + 1) % tubefacets;
-			faces[id][3] = (i + 1) % tubefacets + (torusfacets - 1)
-					* tubefacets;
-			id++;
-		}
-		final HEC_FromFacelist fl = new HEC_FromFacelist();
-		fl.setVertices(vertices).setFaces(faces);
-		return fl.createBase();
-
-	}
+	final HEC_FromFacelist fl = new HEC_FromFacelist();
+	fl.setVertices(vertices).setFaces(faces).setUVW(uvws);
+	return fl.createBase();
+    }
 }

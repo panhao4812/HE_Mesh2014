@@ -1,2 +1,6 @@
 # Ignore class files
 *.class
+# Ignore Eclipse class path
+.classpath
+.project
+.DS_Store

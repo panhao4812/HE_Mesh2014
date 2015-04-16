@@ -1,261 +1,267 @@
+/*
+ *
+ */
 package wblut.geom;
 
-import wblut.WB_Epsilon;
 import wblut.math.WB_M33;
-import wblut.math.WB_Math;
 
-public class WB_CoordinateMath {
+/**
+ * Interface for implementing non-mutable mathematical operations.If the
+ * operations should change the calling object use
+ * {@link wblut.geom.WB_MutableCoordinateMath}.
+ *
+ * @author Frederik Vanhoutte
+ *
+ */
+public interface WB_CoordinateMath {
+    /**
+     * Add coordinate values.
+     *
+     * @param x
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate add(final double... x);
 
-	public static double angleBetween(double cx, double cy, double cz,
-			double p1x, double p1y, double p1z, double p2x, double p2y,
-			double p2z) {
-		final WB_Vector v0 = new WB_Vector(p1x - cx, p1y - cy, p1z - cz);
-		final WB_Vector v1 = new WB_Vector(p2x - cx, p2y - cy, p2z - cz);
-		v0._normalizeSelf();
-		v1._normalizeSelf();
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return Math.acos(d);
+    /**
+     * Add coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param x
+     */
+    public void addInto(final WB_MutableCoordinate result, final double... x);
 
-	}
+    /**
+     * Add coordinate values.
+     *
+     * @param p
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate add(final WB_Coordinate p);
 
-	public static double cosAngleBetween(double cx, double cy, double cz,
-			double p1x, double p1y, double p1z, double p2x, double p2y,
-			double p2z) {
-		final WB_Vector v0 = new WB_Vector(p1x - cx, p1y - cy, p1z - cz);
-		final WB_Vector v1 = new WB_Vector(p2x - cx, p2y - cy, p2z - cz);
-		v0._normalizeSelf();
-		v1._normalizeSelf();
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return d;
+    /**
+     * Add coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param p
+     */
+    public void addInto(final WB_MutableCoordinate result, final WB_Coordinate p);
 
-	}
+    /**
+     * Add multiple of coordinate values.
+     *
+     * @param f
+     *            multiplier
+     * @param x
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate addMul(final double f, final double... x);
 
-	public static double angleBetween(double v1x, double v1y, double v1z,
-			double v2x, double v2y, double v2z) {
-		final WB_Vector v0 = new WB_Vector(v1x, v1y, v1z);
-		final WB_Vector v1 = new WB_Vector(v2x, v2y, v2z);
-		v0._normalizeSelf();
-		v1._normalizeSelf();
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return Math.acos(d);
+    /**
+     * Add multiple of coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     *            multiplier
+     * @param x
+     */
+    public void addMulInto(final WB_MutableCoordinate result, final double f,
+	    final double... x);
 
-	}
+    /**
+     * Add multiple of coordinate values.
+     *
+     * @param f
+     * @param p
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate addMul(final double f, final WB_Coordinate p);
 
-	public static double cosAngleBetween(double v1x, double v1y, double v1z,
-			double v2x, double v2y, double v2z) {
-		final WB_Vector v0 = new WB_Vector(v1x, v1y, v1z);
-		final WB_Vector v1 = new WB_Vector(v2x, v2y, v2z);
-		v0._normalizeSelf();
-		v1._normalizeSelf();
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return d;
+    /**
+     * Add multiple of coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     * @param p
+     */
+    public void addMulInto(final WB_MutableCoordinate result, final double f,
+	    final WB_Coordinate p);
 
-	}
+    /**
+     * Subtract coordinate values.
+     *
+     * @param x
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate sub(final double... x);
 
-	public static double angleBetweenNorm(double cx, double cy, double cz,
-			double p1x, double p1y, double p1z, double p2x, double p2y,
-			double p2z) {
-		final WB_Vector v0 = new WB_Vector(p1x - cx, p1y - cy, p1z - cz);
-		final WB_Vector v1 = new WB_Vector(p2x - cx, p2y - cy, p2z - cz);
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return Math.acos(d);
+    /**
+     * Subtract coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param x
+     */
+    public void subInto(final WB_MutableCoordinate result, final double... x);
 
-	}
+    /**
+     * Subtract coordinate values.
+     *
+     * @param p
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate sub(final WB_Coordinate p);
 
-	public static double cosAngleBetweenNorm(double cx, double cy, double cz,
-			double p1x, double p1y, double p1z, double p2x, double p2y,
-			double p2z) {
-		final WB_Vector v0 = new WB_Vector(p1x - cx, p1y - cy, p1z - cz);
-		final WB_Vector v1 = new WB_Vector(p2x - cx, p2y - cy, p2z - cz);
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return d;
+    /**
+     * Subtract coordinate values and store in mutable coordinate.
+     *
+     * @param result
+     * @param p
+     */
+    public void subInto(final WB_MutableCoordinate result, final WB_Coordinate p);
 
-	}
+    /**
+     * Multiply by factor.
+     *
+     * @param f
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate mul(final double f);
 
-	public static double angleBetweenNorm(double v1x, double v1y, double v1z,
-			double v2x, double v2y, double v2z) {
-		final WB_Vector v0 = new WB_Vector(v1x, v1y, v1z);
-		final WB_Vector v1 = new WB_Vector(v2x, v2y, v2z);
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return Math.acos(d);
+    /**
+     * Multiply by factor and store in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     */
+    public void mulInto(final WB_MutableCoordinate result, final double f);
 
-	}
+    /**
+     * Multiply this coordinate by factor f and add other coordinate values
+     * multiplied by g.
+     *
+     * @param f
+     * @param g
+     * @param x
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate mulAddMul(final double f, final double g,
+	    final double... x);
 
-	public static double cosAngleBetweenNorm(double v1x, double v1y,
-			double v1z, double v2x, double v2y, double v2z) {
-		final WB_Vector v0 = new WB_Vector(v1x, v1y, v1z);
-		final WB_Vector v1 = new WB_Vector(v2x, v2y, v2z);
-		double d = v0.dot(v1);
-		if (d < -1.0) {
-			d = -1.0;
-		}
-		if (d > 1.0) {
-			d = 1.0;
-		}
-		return d;
+    /**
+     * Multiply this coordinate by factor f and add other coordinate values
+     * multiplied by g.
+     *
+     * @param f
+     * @param g
+     * @param p
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate mulAddMul(final double f, final double g,
+	    final WB_Coordinate p);
 
-	}
+    /**
+     * Multiply this coordinate by factor f, add other coordinate values
+     * multiplied by g and store result in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     * @param g
+     * @param x
+     */
+    public void mulAddMulInto(final WB_MutableCoordinate result,
+	    final double f, final double g, final double... x);
 
-	protected static int calculateHashCode(final double x, final double y,
-			final double z) {
-		int result = 17;
+    /**
+     * Multiply this coordinate by factor f, add other coordinate values
+     * multiplied by g and store result in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     * @param g
+     * @param p
+     */
+    public void mulAddMulInto(final WB_MutableCoordinate result,
+	    final double f, final double g, final WB_Coordinate p);
 
-		final long a = Double.doubleToLongBits(x);
-		result += 31 * result + (int) (a ^ (a >>> 32));
+    /**
+     * Divide by factor.
+     *
+     * @param f
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate div(final double f);
 
-		final long b = Double.doubleToLongBits(y);
-		result += 31 * result + (int) (b ^ (b >>> 32));
+    /**
+     * Divide by factor and store in mutable coordinate.
+     *
+     * @param result
+     * @param f
+     */
+    public void divInto(final WB_MutableCoordinate result, final double f);
 
-		final long c = Double.doubleToLongBits(z);
-		result += 31 * result + (int) (c ^ (c >>> 32));
+    /**
+     * Cross product of this coordinate with other coordinate.
+     *
+     * @param p
+     * @return new WB_coordinate
+     */
+    public WB_Coordinate cross(final WB_Coordinate p);
 
-		return result;
+    /**
+     * Store cross product of this coordinate with other coordinate in mutable
+     * coordinate. coordinate.
+     *
+     * @param result
+     * @param p
+     */
+    public void crossInto(final WB_MutableCoordinate result,
+	    final WB_Coordinate p);
 
-	}
+    /**
+     * Dot product.
+     *
+     * @param p
+     * @return dot product
+     */
+    public double dot(final WB_Coordinate p);
 
-	public static double dot(final double x1, double y1, double z1, double x2,
-			double y2, double z2) {
-		double k0 = x1 * x2;
-		double k1 = y1 * y2;
-		double k2 = z1 * z2;
+    /**
+     * 2D dot product
+     *
+     * @param p
+     * @return 2D dot product
+     */
+    public double dot2D(final WB_Coordinate p);
 
-		double exp0 = WB_Math.getExp(k0);
-		double exp1 = WB_Math.getExp(k1);
-		double exp2 = WB_Math.getExp(k2);
-		if (exp0 < exp1) {
-			if (exp0 < exp2) {
-				return (k1 + k2) + k0;
-			} else {
-				return (k0 + k1) + k2;
-			}
-		} else {
-			if (exp1 < exp2) {
-				return (k0 + k2) + k1;
-			} else {
-				return (k0 + k1) + k2;
-			}
-		}
+    /**
+     * Absolute value of dot product.
+     *
+     * @param p
+     * @return absolute value of dot product
+     */
+    public double absDot(final WB_Coordinate p);
 
-	}
+    /**
+     * Absolute value of 2D dot product.
+     *
+     * @param p
+     * @return absolute value of 2D dot product
+     */
+    public double absDot2D(final WB_Coordinate p);
 
-	public static double dot2D(final double x1, double y1, double x2, double y2) {
-		return x1 * x2 + y1 * y2;
-	}
+    /**
+     * Tensor product.
+     *
+     * @param v
+     * @return tensor product
+     */
+    public WB_M33 tensor(final WB_Coordinate v);
 
-	public static WB_Coordinate cross(final WB_Coordinate p,
-			final WB_Coordinate q) {
-		return new WB_Point(p.yd() * q.zd() - p.zd() * q.yd(), p.zd() * q.xd()
-				- p.xd() * q.zd(), p.xd() * q.yd() - p.yd() * q.xd());
-	}
-
-	public static WB_Coordinate cross(final WB_Coordinate c,
-			final WB_Coordinate p, final WB_Coordinate q) {
-		WB_Vector v1 = new WB_Vector(c, p);
-		WB_Vector v2 = new WB_Vector(c, q);
-		return cross(v1, v2);
-	}
-
-	public static WB_Coordinate interpolate(final WB_Coordinate p0,
-			final WB_Coordinate p1, final double t) {
-		return new WB_Point(p0.xd() + t * (p1.xd() - p0.xd()), p0.yd() + t
-				* (p1.yd() - p0.yd()), p0.zd() + t * (p1.zd() - p0.zd()));
-
-	}
-
-	public static double scalarTriple(final WB_Coordinate p,
-			final WB_Coordinate q, final WB_Coordinate r) {
-		WB_Coordinate c = cross(q, r);
-		return dot(p.xd(), p.yd(), p.zd(), c.xd(), c.yd(), c.zd());
-	}
-
-	public static WB_M33 tensor(final WB_Coordinate p, final WB_Coordinate q) {
-		return new WB_M33(p.xd() * q.xd(), p.xd() * q.yd(), p.xd() * q.zd(),
-				p.yd() * q.xd(), p.yd() * q.yd(), p.yd() * q.zd(), p.zd()
-						* q.xd(), p.zd() * q.yd(), p.zd() * q.zd());
-	}
-
-	public static double getLength(double x, double y, double z) {
-		return Math.sqrt(x * x + y * y + z * z);
-	}
-
-	public static double getSqLength(double x, double y, double z) {
-		return x * x + y * y + z * z;
-	}
-
-	public static double getDistance(double x1, double y1, double z1,
-			double x2, double y2, double z2) {
-		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)
-				+ (z2 - z1) * (z2 - z1));
-	}
-
-	public static double getSqDistance(double x1, double y1, double z1,
-			double x2, double y2, double z2) {
-		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1)
-				* (z2 - z1);
-	}
-
-	public static double getLength2D(double x, double y) {
-		return Math.sqrt(x * x + y * y);
-	}
-
-	public static double getSqLength2D(double x, double y) {
-		return x * x + y * y;
-	}
-
-	public static double getDistance2D(double x1, double y1, double x2,
-			double y2) {
-		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-	}
-
-	public static double getSqDistance2D(double x1, double y1, double x2,
-			double y2) {
-		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-	}
-
-	public static boolean isZero(double x, double y, double z) {
-		return (getSqLength(x, y, z) < WB_Epsilon.SQEPSILON);
-	}
-
+    /**
+     * Scalar triple: this.(v x w)
+     *
+     * @param v
+     * @param w
+     * @return scalar triple
+     */
+    public double scalarTriple(final WB_Coordinate v, final WB_Coordinate w);
 }

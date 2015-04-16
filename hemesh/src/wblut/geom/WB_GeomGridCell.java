@@ -1,62 +1,128 @@
+/*
+ * 
+ */
 package wblut.geom;
 
 import java.util.ArrayList;
 
-import wblut.geom.interfaces.Segment;
-
+/**
+ * 
+ */
 public class WB_GeomGridCell {
+    
+    /**
+     * 
+     */
+    protected int index;
+    
+    /**
+     * 
+     */
+    protected WB_AABB aabb;
+    
+    /**
+     * 
+     */
+    protected ArrayList<WB_Point> points;
+    
+    /**
+     * 
+     */
+    protected ArrayList<WB_Segment> segments;
 
-	protected int index;
+    /**
+     * 
+     *
+     * @param index 
+     * @param min 
+     * @param max 
+     */
+    public WB_GeomGridCell(final int index, final WB_Coordinate min,
+	    final WB_Coordinate max) {
+	this.index = index;
+	points = new ArrayList<WB_Point>();
+	segments = new ArrayList<WB_Segment>();
+	aabb = new WB_AABB(min, max);
+    }
 
-	protected WB_AABB aabb;
+    /**
+     * 
+     *
+     * @param p 
+     */
+    public void addPoint(final WB_Coordinate p) {
+	points.add(new WB_Point(p));
+    }
 
-	protected ArrayList<WB_Point> points;
+    /**
+     * 
+     *
+     * @param p 
+     */
+    public void removePoint(final WB_Point p) {
+	points.remove(p);
+    }
 
-	protected ArrayList<Segment> segments;
+    /**
+     * 
+     *
+     * @param seg 
+     */
+    public void addSegment(final WB_Segment seg) {
+	segments.add(seg);
+    }
 
-	public WB_GeomGridCell(final int index, final WB_Coordinate min,
-			final WB_Coordinate max) {
-		this.index = index;
-		points = new ArrayList<WB_Point>();
-		segments = new ArrayList<Segment>();
-		aabb = new WB_AABB(min, max);
+    /**
+     * 
+     *
+     * @param seg 
+     */
+    public void removeSegment(final WB_Segment seg) {
+	segments.remove(seg);
+    }
 
-	}
+    /**
+     * 
+     *
+     * @return 
+     */
+    public ArrayList<WB_Point> getPoints() {
+	return points;
+    }
 
-	public void addPoint(final WB_Coordinate p) {
-		points.add(new WB_Point(p));
-	}
+    /**
+     * 
+     *
+     * @return 
+     */
+    public ArrayList<WB_Segment> getSegments() {
+	return segments;
+    }
 
-	public void removePoint(final WB_Point p) {
-		points.remove(p);
-	}
+    /**
+     * 
+     *
+     * @return 
+     */
+    public int getIndex() {
+	return index;
+    }
 
-	public void addSegment(final Segment seg) {
-		segments.add(seg);
-	}
+    /**
+     * 
+     *
+     * @return 
+     */
+    public WB_AABB getAABB() {
+	return aabb;
+    }
 
-	public void removeSegment(final Segment seg) {
-		segments.remove(seg);
-	}
-
-	public ArrayList<WB_Point> getPoints() {
-		return points;
-	}
-
-	public ArrayList<Segment> getSegments() {
-		return segments;
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
-	public WB_AABB getAABB() {
-		return aabb;
-	}
-
-	public boolean isEmpty() {
-		return points.isEmpty() && segments.isEmpty();
-
-	}
+    /**
+     * 
+     *
+     * @return 
+     */
+    public boolean isEmpty() {
+	return points.isEmpty() && segments.isEmpty();
+    }
 }

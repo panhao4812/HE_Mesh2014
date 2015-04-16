@@ -1,72 +1,142 @@
+/*
+ *
+ */
 package wblut.hemesh;
 
-import java.util.Iterator;
+import wblut.geom.WB_Geodesic;
 
-import wblut.geom.WB_Distance;
-import wblut.geom.WB_Point;
-
+/**
+ *
+ */
 public class HEC_Geodesic extends HEC_Creator {
+    /**
+     *
+     */
+    public static final int TETRAHEDRON = 0;
+    /**
+     *
+     */
+    public static final int OCTAHEDRON = 1;
+    /**
+     *
+     */
+    public static final int CUBE = 2;
+    /**
+     *
+     */
+    public static final int DODECAHEDRON = 3;
+    /**
+     *
+     */
+    public static final int ICOSAHEDRON = 4;
+    /**
+     *
+     */
+    private double rx, ry, rz;
+    /**
+     *
+     */
+    private int type;
+    /**
+     *
+     */
+    private int b;
+    /**
+     *
+     */
+    private int c;
 
-	private double R;
+    /**
+     *
+     */
+    public HEC_Geodesic() {
+	super();
+	rx = ry = rz = 1;
+	type = 4;
+	b = c = 4;
+    }
 
-	private int level;
+    /**
+     *
+     *
+     * @param R
+     */
+    public HEC_Geodesic(final double R) {
+	this();
+	rx = ry = rz = R;
+	b = c = 4;
+    }
 
-	private int type;
+    /**
+     *
+     *
+     * @param R
+     * @return
+     */
+    public HEC_Geodesic setRadius(final double R) {
+	rx = ry = rz = R;
+	return this;
+    }
 
-	public HEC_Geodesic() {
-		super();
-		R = 0f;
-	}
+    /**
+     *
+     *
+     * @param rx
+     * @param ry
+     * @param rz
+     * @return
+     */
+    public HEC_Geodesic setRadius(final double rx, final double ry,
+	    final double rz) {
+	this.rx = rx;
+	this.ry = ry;
+	this.rz = rz;
+	return this;
+    }
 
-	public HEC_Geodesic(final double R, final int L) {
-		this();
-		this.R = R;
-		level = L;
-	}
+    /**
+     *
+     *
+     * @param b
+     * @return
+     */
+    public HEC_Geodesic setB(final int b) {
+	this.b = b;
+	return this;
+    }
 
-	public HEC_Geodesic setRadius(final double R) {
-		this.R = R;
-		return this;
-	}
+    /**
+     *
+     *
+     * @param c
+     * @return
+     */
+    public HEC_Geodesic setC(final int c) {
+	this.c = c;
+	return this;
+    }
 
-	public HEC_Geodesic setLevel(final int L) {
-		level = L;
-		return this;
-	}
+    /**
+     *
+     *
+     * @param t
+     * @return
+     */
+    public HEC_Geodesic setType(final int t) {
+	type = t;
+	return this;
+    }
 
-	public HEC_Geodesic setType(final int t) {
-		type = t;
-		return this;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see wblut.hemesh.HE_Creator#create()
-	 */
-	@Override
-	protected HE_Mesh createBase() {
-
-		HE_Mesh result;
-		HEC_Creator ic = new HEC_Icosahedron().setOuterRadius(R);
-		if (type == 1) {
-			ic = new HEC_Tetrahedron().setOuterRadius(R);
-		} else if (type == 2) {
-			ic = new HEC_Octahedron().setOuterRadius(R);
-		}
-		result = ic.createBase();
-		final HES_PlanarMidEdge pmes = new HES_PlanarMidEdge();
-		result.subdivide(pmes, level);
-		final WB_Point bc = new WB_Point(0, 0, 0);
-		HE_Vertex v;
-		final Iterator<HE_Vertex> vItr = result.vItr();
-		while (vItr.hasNext()) {
-			v = vItr.next();
-			final double d = Math.sqrt(WB_Distance.getSqDistance3D(v, bc));
-			v.pos._mulSelf(R / d);
-		}
-
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see wblut.hemesh.HE_Creator#create()
+     */
+    @Override
+    protected HE_Mesh createBase() {
+	final WB_Geodesic geo = new WB_Geodesic(1.0, b, c, type);
+	final HE_Mesh mesh = new HE_Mesh(new HEC_FromMesh(geo));
+	mesh.scale(rx, ry, rz);
+	return mesh;
+    }
 }
